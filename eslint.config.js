@@ -1,6 +1,6 @@
 import js from '@eslint/js'
 import globals from 'globals'
-import { defineConfig } from 'eslint/config'
+import { defineConfig } from 'eslint/config.js'
 
 export default defineConfig([
   {
