@@ -1,16 +1,16 @@
 import express from 'express'
 import { PORT } from './config/serverConfig.js'
-import { StatusCodes } from 'http-status-codes'
 import connectDB from './config/dbConfig.js';
+import apiRouter from './routes/apiRouter.js'
+import pingRoute from './routes/pingRoute.js'
 
 const app = express()
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-app.get('/ping', (req, res) => {
-  return res.status(StatusCodes.OK).json({ message: 'pong' })
-})
+app.use('/api',apiRouter);
+app.use('/ping',pingRoute)
 
 app.listen(PORT, () => {
   connectDB();
