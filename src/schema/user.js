@@ -1,4 +1,5 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+import bcrypt from 'bcrypt';
 const userSchema = new mongoose.Schema({
     email:{
         type:String,
@@ -14,18 +15,22 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:[true,'Username is required'],
         unique:[true,'Username already Exists'],
-        match:[/[^a-zA-Z0-9]+$/,'Username is required']
+        minLenth:[3,'Username must be atleast 3 charcters'],
+        match: [/^[a-zA-Z0-9_]{3,20}$/, 'Invalid username format']
     },
     avatar:{
         type:String,
     }
 },{timestamps:true});
 
-userSchema.pre('save',function saveUser(next){
+userSchema.pre('save', function() {
     const user = this;
+    const SALT = bcrypt.genSaltSync(9);
+    const hashedPassword = bcrypt.hashSync(user.password, SALT);
+    user.password = hashedPassword;
     user.avatar = `https://robohash.org/${user.username}`;
-    next();
 });
+
 const User = mongoose.model('User',userSchema);
 
 export default User;
