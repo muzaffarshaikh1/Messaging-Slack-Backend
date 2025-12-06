@@ -45,7 +45,6 @@ export const validate = (schema) => {
                     const field = issue.path[0];
                     let message = issue.message;
                     
-                    // Clean up common Zod error messages
                     if (message.includes('expected string, received undefined')) {
                         message = 'is required';
                     } else if (message.includes('Invalid input')) {
@@ -76,7 +75,6 @@ export const validate = (schema) => {
                 );
             }
             
-            // Handle non-Zod errors
             console.error("Unexpected error:", error);
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(
                 customErrorResponse({
