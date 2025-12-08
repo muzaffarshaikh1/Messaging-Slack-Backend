@@ -6,3 +6,7 @@ export const createJWT = (payload) => {
         { expiresIn: JWT_EXPIRY }
     );
 }
+
+export const verifyJWT = (token) =>{
+    return jwt.verify(token,JWT_SECRET);
+}
