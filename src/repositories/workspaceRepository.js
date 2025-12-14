@@ -45,7 +45,7 @@ const workspaceRepository = {
             });
         }
 
-        const isValidUser = await User.find(memberId);
+        const isValidUser = await User.find({_id:memberId});
 
         if (!isValidUser) {
             throw new ClientError({
