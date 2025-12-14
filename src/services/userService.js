@@ -29,7 +29,7 @@ export const signUpService = async (data) => {
             );
         }
 
-        throw error; // unknown errors
+        throw error;
     }
 };
 

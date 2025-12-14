@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { customErrorResponse, internalErrorResponse } from "../utils/common/responseObject";
+import { customErrorResponse, internalErrorResponse } from "../utils/common/responseObject.js";
 import { verifyJWT } from "../utils/common/authUtils.js"
 import userRepository from '../repositories/userRepository.js'
 

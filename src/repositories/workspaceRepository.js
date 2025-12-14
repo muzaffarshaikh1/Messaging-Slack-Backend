@@ -1,9 +1,8 @@
 import { StatusCodes } from "http-status-codes";
-import Workspace from "../schema/workspace";
+import Workspace from "../schema/workspace.js";
 import crudRepository from "./crudRepository.js";
 import ClientError from '../utils/errors/clientError.js'
 import mongoose from "mongoose";
-import Channel from "../schema/channel.js";
 import User from "../schema/user.js";
 import channelRepository from "./channelRepository.js";
 
@@ -36,7 +35,7 @@ const workspaceRepository = {
     },
 
     addMemberToWorkspace: async function (workspaceId, memberId, memberRole) {
-        const workspace = await Workspace.findById(workspaceId);
+        const workspace = await Workspace.findById(workspaceId).populate('channels');
 
         if (!workspace) {
             throw new ClientError({
@@ -56,7 +55,7 @@ const workspaceRepository = {
             });
         }
 
-        const isAlreadyPartOfWorkspace = mongoose.members.find(member => member.memberId == memberId);
+        const isAlreadyPartOfWorkspace = workspace.members.find(member => member.memberId == memberId);
 
         if (isAlreadyPartOfWorkspace) {
             throw new ClientError({
@@ -101,12 +100,18 @@ const workspaceRepository = {
 
         await workspace.save();
 
-        return workspace;
+        const populatedWorkspace = await Workspace.findById(workspaceId)
+        .populate('channels', 'name').populate({
+            path: 'members.memberId',
+            select: 'name email avatar'
+          });
+
+        return populatedWorkspace;
 
     },
     fetchAllWorkspaceByMemberId: async function (memberId) {
         const workspaces = await Workspace.find({ 'members.memberId': memberId })
-            .populate('members.member', 'username email avatar');
+            .populate('members.memberId', 'username email avatar');
 
         return workspaces;
     }
