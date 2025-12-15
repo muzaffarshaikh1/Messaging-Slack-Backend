@@ -65,9 +65,11 @@ const workspaceRepository = {
             });
         }
 
+        console.log("memberRole:",memberRole)
+
         workspace.members.push({
             memberId,
-            memberRole
+            role:memberRole
         });
 
         await workspace.save();
