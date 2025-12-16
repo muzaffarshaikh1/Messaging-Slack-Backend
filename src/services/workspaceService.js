@@ -5,6 +5,18 @@ import channelRepository from "../repositories/channelRepository.js";
 import ClientError from "../utils/errors/clientError.js";
 import { StatusCodes } from "http-status-codes";
 
+export const isUserAdminOfWorkspace = (workspace, userId) => {
+    return workspace.members.some(
+        memeber => memeber.memberId.toString() == userId && memeber.role == 'admin'
+    );
+}
+
+export const isUserMemberOfWorkspace = (workspace, userId) => {
+    return workspace.members.some(
+        memeber => memeber.memberId.toString() == userId 
+    );
+}
+
 export const createWorkspaceService = async(workspaceData) => {
     try {
         const joinCode = uuidv4().substring(0,6).toUpperCase(); 
@@ -65,10 +77,9 @@ export const deleteWorkspaceService = async(workspaceId,userId) => {
             });
         }
 
-        console.log("workspace.members: ",workspace.members,"userId:", userId)
-        const isAllowed = workspace.members.some(
-            memeber => memeber.memberId.toString() == userId && memeber.role == 'admin'
-        );
+        // console.log("workspace.members: ",workspace.members,"userId:", userId)
+
+        const isAllowed = isUserAdminOfWorkspace(workspace,userId);
 
         if(isAllowed){
             await channelRepository.deleteMany(workspace.channels);
@@ -84,4 +95,34 @@ export const deleteWorkspaceService = async(workspaceId,userId) => {
         console.log("error in deleteWorkspaceService:",error);
         throw error;
     }
+}
+
+export const getWorkspaceService = async (workspaceId, userId) => {
+   try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+
+    if(!workspace){
+        throw new ClientError({
+            explanation:"Invalid data senct from the client",
+            message:"Workspace not found",
+            statusCode:StatusCodes.NOT_FOUND
+        });
+    }
+
+    console.log("workspace:",workspace)
+    const isMember = isUserMemberOfWorkspace(workspace, userId);
+
+    if(!isMember){
+        throw new ClientError({
+            explanation:"User is not member of workspace",
+            message:"User is not member of workspace",
+            statusCode:StatusCodes.UNAUTHORIZED
+        });
+    }
+
+    return workspace;
+   } catch (error) {
+    console.log("error in getWorkspaceService: ",error);
+    throw error;
+   }
 }
