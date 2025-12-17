@@ -8,6 +8,12 @@ import channelRepository from "./channelRepository.js";
 
 const workspaceRepository = {
     ...crudRepository(Workspace),
+    getWorkspaceDetails: async function (workspaceId){
+        const workspace = await Workspace.findById(workspaceId)
+        .populate('channels')
+        .populate('members,memberId','username email avatar') ;;
+        return workspace;
+    },
     getWorkspaceByName: async function (workspaceName) {
         const workspace = await Workspace.findOne({ name: workspaceName });
 
@@ -21,7 +27,7 @@ const workspaceRepository = {
 
         return workspace;
     },
-    getWorkspaceByJoinCode: async function (workspaceJoinCode) {
+    getWorkspaceByJoincode: async function (workspaceJoinCode) {
         const workspace = await Workspace.findOne({ joinCode: workspaceJoinCode }); 4
 
         if (!workspace) {
@@ -65,7 +71,6 @@ const workspaceRepository = {
             });
         }
 
-        console.log("memberRole:",memberRole)
 
         workspace.members.push({
             memberId,
