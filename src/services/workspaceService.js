@@ -8,13 +8,17 @@ import userRepository from "../repositories/userRepository.js";
 
 export const isUserAdminOfWorkspace = (workspace, userId) => {
     return workspace.members.some(
-        member => member.memberId.toString() == userId || member.memberId._id.toString() == userId && member.role == 'admin'
+        member => (member.memberId.toString() == userId 
+        || member.memberId._id.toString() == userId)
+         && member.role == 'admin'
     );
 }
 
 export const isUserMemberOfWorkspace = (workspace, userId) => {
+    console.log("-------------",workspace, userId)
     return workspace.members.some(
-        memeber => memeber.memberId.toString() == userId 
+        (member => member.memberId.toString() == userId 
+        || member.memberId._id.toString() == userId)
     );
 }
 
