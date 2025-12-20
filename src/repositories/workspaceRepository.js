@@ -11,7 +11,7 @@ const workspaceRepository = {
     getWorkspaceDetails: async function (workspaceId){
         const workspace = await Workspace.findById(workspaceId)
         .populate('channels')
-        .populate('members,memberId','username email avatar') ;;
+        .populate('members.memberId','username email avatar') ;;
         return workspace;
     },
     getWorkspaceByName: async function (workspaceName) {
@@ -101,7 +101,7 @@ const workspaceRepository = {
             });
         }
 
-        const channel = await channelRepository.create({name:channelName});
+        const channel = await channelRepository.create({name:channelName,workspaceId:workspaceId});
 
         workspace.channels.push(channel.id);
 
