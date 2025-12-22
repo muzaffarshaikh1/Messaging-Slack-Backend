@@ -1,9 +1,9 @@
 import { StatusCodes } from "http-status-codes";
-import channelRepository from "../repositories/channelRepository";
-import messageRepository from "../repositories/messageRepository"
-import workspaceRepository from "../repositories/workspaceRepository";
-import ClientError from "../utils/errors/clientError";
-import { isUserMemberOfWorkspace } from "./workspaceService";
+import channelRepository from "../repositories/channelRepository.js";
+import messageRepository from "../repositories/messageRepository.js"
+import workspaceRepository from "../repositories/workspaceRepository.js";
+import ClientError from "../utils/errors/clientError.js";
+import { isUserMemberOfWorkspace } from "./workspaceService.js";
 
 export const getPaginatedMessagesService = async(messageParams,page,limit,memberId) =>{
     try {
@@ -44,4 +44,9 @@ export const getPaginatedMessagesService = async(messageParams,page,limit,member
         console.log("error in getPaginatedMessagesRepository",error);
         throw error;
     }
+}
+
+export const createMessageService = async(message) =>{
+    const newMessage = await messageRepository.create(message);
+    return newMessage;
 }
