@@ -3,6 +3,7 @@ import channelRepository from "../repositories/channelRepository.js"
 import ClientError from "../utils/errors/clientError.js";
 
 import { isUserMemberOfWorkspace } from "./workspaceService.js";
+import { getPaginatedMessagesService } from "./messageService.js";
 
 // export const isUserMemberOfWorkspace = (c)
 
@@ -22,6 +23,7 @@ export const getChannelByIdService = async function (channelId, memberId){
 
         const isMember =isUserMemberOfWorkspace(channel.workspaceId,memberId);
         
+        // console.log("isMember",isMember);
 
         if(!isMember){
             throw new ClientError({
@@ -31,7 +33,19 @@ export const getChannelByIdService = async function (channelId, memberId){
             });
         }
 
-        return channel;
+        const messages = await getPaginatedMessagesService({channelId},1,20,memberId)
+
+        // console.log("channel:",channel)
+        // console.log("messages:",messages)
+
+        return {
+            messages,
+            _id:channel._id,
+            name:channel.name,
+            createdAt:channel.createdAt,
+            updatedAt:channel.updatedAt,
+            workspaceId:channel.workspaceId
+        };
 
     } catch (error) {
         console.log("error in getChannelByService:",error);

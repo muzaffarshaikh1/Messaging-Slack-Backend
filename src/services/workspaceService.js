@@ -16,7 +16,10 @@ export const isUserAdminOfWorkspace = (workspace, userId) => {
 }
 
 export const isUserMemberOfWorkspace = (workspace, userId) => {
-    console.log("-------------",workspace, userId)
+    // console.log("-------------",workspace, userId);
+    // console.log("********",workspace.members[0].memberId, userId, workspace.members[0].memberId == userId);
+
+
     return workspace.members.some(
         (member => member.memberId.toString() == userId 
         || member.memberId._id.toString() == userId)

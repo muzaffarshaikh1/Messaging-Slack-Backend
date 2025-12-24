@@ -7,7 +7,7 @@ import { isUserMemberOfWorkspace } from "./workspaceService.js";
 
 export const getPaginatedMessagesService = async(messageParams,page,limit,memberId) =>{
     try {
-        const channel = channelRepository.getChannelDetails(messageParams.channelId);
+        const channel = await channelRepository.getChannelDetails(messageParams.channelId);
 
         if(!channel){
             throw new ClientError({
@@ -39,7 +39,7 @@ export const getPaginatedMessagesService = async(messageParams,page,limit,member
 
         const messages = await messageRepository.getPaginatedMessages(messageParams,page,limit);
 
-        return messages
+        return messages;
     } catch (error) {
         console.log("error in getPaginatedMessagesRepository",error);
         throw error;

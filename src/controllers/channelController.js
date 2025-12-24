@@ -3,7 +3,6 @@ import { customErrorResponse, internalErrorResponse, successResponse } from "../
 import { getChannelByIdService } from "../services/channelService.js";
 
 export const getChannelByIdController = async (req,res) =>{
-    console.log("inside getChannelByIdController");
    try {
        const response = await getChannelByIdService(req.params.channelId, req.user);
        if(response){
