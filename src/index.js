@@ -7,7 +7,8 @@ import bullServerAdapator from './config/bullBoardConfig.js';
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-import messageHandler  from './controllers/messageSocketController.js';
+import messageSocketHandler from './controllers/messageSocketController.js';
+import channelSocketHandler from './controllers/channelSocketController.js'
 const app = express()
 const server = createServer(app);
 const io = new Server(server);
@@ -21,7 +22,8 @@ app.use('/ping',pingRoute)
 
 io.on('connection', (socket) => {
   console.log('a user connected',socket.id);
-  messageHandler(io,socket);
+  messageSocketHandler(io,socket);
+  channelSocketHandler(io,socket);
 });
 
 server.listen(PORT, async() => {
