@@ -4,6 +4,7 @@ import connectDB from './config/dbConfig.js';
 import apiRouter from './routes/apiRouter.js'
 import pingRoute from './routes/pingRoute.js'
 import bullServerAdapator from './config/bullBoardConfig.js';
+import cors from 'cors';
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
@@ -15,7 +16,7 @@ const io = new Server(server);
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-
+app.use(cors())
 app.use('/ui',bullServerAdapator.getRouter());
 app.use('/api',apiRouter);
 app.use('/ping',pingRoute)
