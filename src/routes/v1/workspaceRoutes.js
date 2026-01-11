@@ -7,7 +7,8 @@ import {
       getWorkspaceByJoincodeController,
       updateWorkspaceController,
       addMemberToWorkspaceController,
-      addChannelToWorkspaceController
+      addChannelToWorkspaceController,
+      resetJoinCodeController
 } from '../../controllers/workspaceController.js';
 import { validate } from '../../validators/zodValidator.js';
 import { createWorkspaceSchema,addMemberToWorkspaceSchema,addChannelToWorkspaceSchema } from '../../validators/workspaceSchema.js';
@@ -25,5 +26,6 @@ router.put('/:workspaceId', isAuthenticated, updateWorkspaceController);
 router.get('/join/:joincode', isAuthenticated, getWorkspaceByJoincodeController);
 router.post('/:workspaceId/members',validate(addMemberToWorkspaceSchema), isAuthenticated, addMemberToWorkspaceController);
 router.post('/:workspaceId/channels',validate(addChannelToWorkspaceSchema), isAuthenticated, addChannelToWorkspaceController);
+router.put('/:workspaceId/joinCode/reset',isAuthenticated,resetJoinCodeController);
 
 export default router;

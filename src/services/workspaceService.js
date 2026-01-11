@@ -273,6 +273,22 @@ export const getWorkspaceByJoincodeService = async (joincode, userId) => {
     }
   }
 
+export const resetWorkspaceJoinCodeService = async (workspaceId,userId)=>{
+    try {
+        const newJoinCode = uuidv4().substring(0,6).toUpperCase();
+        const updatedWorkspace = await updateWorkspaceService(
+            workspaceId,
+            {
+                joinCode:newJoinCode
+            },
+            userId
+        );
+        return updatedWorkspace;
+    } catch (error) {
+        console.log("error in resetWorkspaceJoinCodeService: ",error);
+        throw error;
+    }
+}
   
  export const addChannelToWorkspaceService = async (workspaceId,channelName, userId) =>{
     console.log(workspaceId,channelName, userId)
