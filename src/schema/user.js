@@ -1,36 +1,51 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 const userSchema = new mongoose.Schema({
-    email:{
-        type:String,
-        required:[true,'Email is required'],
-        unique:[true,'Email already Exists'],
-        match:[/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,'Invalid Format']
+    email: {
+        type: String,
+        required: [true, 'Email is required'],
+        unique: [true, 'Email already Exists'],
+        match: [/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, 'Invalid Format']
     },
-    password:{
-        type:String,
-        required:[true,'Password is required']
+    password: {
+        type: String,
+        required: [true, 'Password is required']
     },
-    username:{
-        type:String,
-        required:[true,'Username is required'],
-        unique:[true,'Username already Exists'],
-        minLenth:[3,'Username must be atleast 3 charcters'],
+    username: {
+        type: String,
+        required: [true, 'Username is required'],
+        unique: [true, 'Username already Exists'],
+        minLenth: [3, 'Username must be atleast 3 charcters'],
         match: [/^[a-zA-Z0-9_]{3,20}$/, 'Invalid username format']
     },
-    avatar:{
-        type:String,
+    avatar: {
+        type: String,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    verificationToken: {
+        type: String
+    },
+    verificationTokenExpiry: {
+        type: Date
     }
-},{timestamps:true});
+}, { timestamps: true });
 
-userSchema.pre('save', function() {
-    const user = this;
-    const SALT = bcrypt.genSaltSync(9);
-    const hashedPassword = bcrypt.hashSync(user.password, SALT);
-    user.password = hashedPassword;
-    user.avatar = `https://robohash.org/${user.username}`;
+userSchema.pre('save', function () {
+    if (this.isNew) {
+        const user = this;
+        const SALT = bcrypt.genSaltSync(9);
+        const hashedPassword = bcrypt.hashSync(user.password, SALT);
+        user.password = hashedPassword;
+        user.verificationToken = uuidv4().substring(0, 10).toUpperCase();
+        user.verificationTokenExpiry = Date.now() + 3600000; //1hr
+        user.avatar = `https://robohash.org/${user.username}`;
+    }
 });
 
-const User = mongoose.model('User',userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;

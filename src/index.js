@@ -10,6 +10,7 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import messageSocketHandler from './controllers/messageSocketController.js';
 import channelSocketHandler from './controllers/channelSocketController.js'
+import { verifyEmailController } from './controllers/workspaceController.js';
 const app = express()
 const server = createServer(app);
 const io = new Server(server);
@@ -19,6 +20,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(cors())
 app.use('/ui',bullServerAdapator.getRouter());
 app.use('/api',apiRouter);
+app.get('/verify/:token',verifyEmailController);
 app.use('/ping',pingRoute)
 
 io.on('connection', (socket) => {

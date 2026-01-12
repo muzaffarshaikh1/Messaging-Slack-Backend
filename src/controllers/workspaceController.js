@@ -7,10 +7,12 @@ import {
     getAllWorkspaceUserIsMemberOfService,
     getWorkspaceByJoincodeService,
     getWorkspaceService,
+    joinWorkspaceService,
     resetWorkspaceJoinCodeService,
     updateWorkspaceService
 } from "../services/workspaceService.js"
 import { customErrorResponse, internalErrorResponse, successResponse } from "../utils/common/responseObject.js";
+import { verifyTokenService } from "../services/userService.js";
 
 export const createWorkspaceController = async (req, res) => {
     try {
@@ -92,7 +94,7 @@ export const getWorkspaceByJoincodeController = async (req, res) => {
 
 export const updateWorkspaceController = async (req, res) => {
     try {
-        const response = await updateWorkspaceService(req.params.workspaceId,req.body,req.user)
+        const response = await updateWorkspaceService(req.params.workspaceId, req.body, req.user)
         if (response) {
             return res.status(StatusCodes.OK).json(successResponse(response, "Workspace Updated successfully!"));
         }
@@ -107,7 +109,7 @@ export const updateWorkspaceController = async (req, res) => {
 
 export const addMemberToWorkspaceController = async (req, res) => {
     try {
-        const response = await addMemberToWorkspaceService(req.params.workspaceId,req.body.memberId,req.body.role ||'member',req.user)
+        const response = await addMemberToWorkspaceService(req.params.workspaceId, req.body.memberId, req.body.role || 'member', req.user)
         if (response) {
             return res.status(StatusCodes.OK).json(successResponse(response, "Member added to Workspace successfully!"));
         }
@@ -123,7 +125,7 @@ export const addMemberToWorkspaceController = async (req, res) => {
 
 export const addChannelToWorkspaceController = async (req, res) => {
     try {
-        const response = await addChannelToWorkspaceService(req.params.workspaceId,req.body.channelName,req.user)
+        const response = await addChannelToWorkspaceService(req.params.workspaceId, req.body.channelName, req.user)
         if (response) {
             return res.status(StatusCodes.OK).json(successResponse(response, "Channel added to Workspace successfully!"));
         }
@@ -154,3 +156,40 @@ export const resetJoinCodeController = async (req, res) => {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalErrorResponse(error));
     }
 }
+
+export const joinWorkspaceController = async (req, res) => {
+    try {
+        const response = await joinWorkspaceService(
+            req.params.workspaceId,
+            req.body.joinCode,
+            req.user);
+        if (response) {
+            return res.status(StatusCodes.OK).json(successResponse(response, "Joined workspace successfully!"));
+        }
+
+    } catch (error) {
+        console.log("Error in joinWorkspaceController: ", error);
+        if (error.statusCode) {
+            return res.status(error.statusCode).json(customErrorResponse(error));
+        }
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalErrorResponse(error));
+    }
+}
+
+export const verifyEmailController = async (req, res) => {
+    try {
+        const response = await verifyTokenService(
+            req.params.token,
+        );
+        if (response) {
+            return res.status(StatusCodes.OK).json(successResponse(response, "Email verified successfully!"));
+        }
+    } catch (error) {
+        console.log("Error in verifyEmailController: ", error);
+        if (error.statusCode) {
+            return res.status(error.statusCode).json(customErrorResponse(error));
+        }
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalErrorResponse(error));
+    }
+}
+
