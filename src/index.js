@@ -13,7 +13,11 @@ import channelSocketHandler from './controllers/channelSocketController.js'
 import { verifyEmailController } from './controllers/workspaceController.js';
 const app = express()
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server,{
+  cors:{
+    origin:'*'
+  }
+});
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
