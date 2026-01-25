@@ -29,7 +29,7 @@ export const isAuthenticated = async (req, res, next) => {
 
     } catch (error) {
         console.log("error in authMiddleware", error);
-        if (error.name == 'JsonWebTokenError') {
+        if (error.name == 'JsonWebTokenError' || error.name == 'TokenExpiredError') {
             return res.status(StatusCodes.FORBIDDEN).json(customErrorResponse({
                 explanation: 'invalid data sent from the client',
                 message: 'invalid auth token provided'
