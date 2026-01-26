@@ -5,7 +5,7 @@ import crudRepository from "./crudRepository.js";
     ...crudRepository(Message),
     getPaginatedMessages: async function(messageParams,page,limit){
         const messages = Message.find(messageParams)
-        .sort({createdAt:-1})
+        .sort({createdAt:1})
         .skip((page-1) * limit)
         .limit(limit)
         .populate('senderId','username avatar email');
